@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة مهام البيت</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #d4af37;
+            --primary-hover: #b5952f;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        button.submit-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            background: var(--bg-color);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .task-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .task-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+        }
+
+        .complete-btn {
+            background: var(--text-main);
+            color: #000;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .completed-task {
+            opacity: 0.6;
+        }
+
+        .completed-task .task-title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .completed-badge {
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>إدارة المهام</h1>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('indoor')" id="btn-indoor">مهام داخلية</button>
+        <button class="tab-btn" onclick="switchTab('outdoor')" id="btn-outdoor">مهام خارجية</button>
+    </div>
+
+    <div class="card">
+        <div class="form-group">
+            <label>وصف المهمة</label>
+            <input type="text" id="task-desc" placeholder="اكتب المهمة هنا...">
+        </div>
+        <div class="form-group">
+            <label>من أضاف المهمة؟</label>
+            <select id="task-adder">
+                <option value="ام هيام">ام هيام</option>
+                <option value="ابو فيصل">ابو فيصل</option>
+                <option value="هيام">هيام</option>
+                <option value="فيصل">فيصل</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>لمن هذه المهمة؟</label>
+            <select id="task-assignee">
+                <!-- يتم التحديث برمجياً بناءً على القسم -->
+            </select>
+        </div>
+        <button class="submit-btn" onclick="addTask()">إضافة المهمة</button>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-bottom: 15px; color: var(--primary);">قائمة المهام</h3>
+        <ul class="task-list" id="tasks-container">
+            <!-- المهام تظهر هنا -->
+        </ul>
+    </div>
+</div>
+
+<script>
+    const allMembers = ['ام هيام', 'ابو فيصل', 'هيام', 'فيصل'];
+    const outdoorAssignees = ['ام هيام', 'ابو فيصل'];
+    
+    let currentTab = 'indoor';
+    let tasks = [];
+
+    function updateAssigneeDropdown() {
+        const select = document.getElementById('task-assignee');
+        select.innerHTML = '<option value="الجميع">مفتوحة للجميع</option>';
+        
+        const members = currentTab === 'indoor' ? allMembers : outdoorAssignees;
+        
+        members.forEach(member => {
+            const option = document.createElement('option');
+            option.value = member;
+            option.textContent = member;
+            select.appendChild(option);
+        });
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.getElementById('btn-indoor').classList.toggle('active', tab === 'indoor');
+        document.getElementById('btn-outdoor').classList.toggle('active', tab === 'outdoor');
+        updateAssigneeDropdown();
+        renderTasks();
+    }
+
+    function addTask() {
+        const desc = document.getElementById('task-desc').value.trim();
+        const adder = document.getElementById('task-adder').value;
+        const assignee = document.getElementById('task-assignee').value;
+
+        if (!desc) {
+            alert('الرجاء كتابة وصف المهمة');
+            return;
+        }
+
+        const newTask = {
+            id: Date.now(),
+            desc: desc,
+            adder: adder,
+            assignee: assignee,
+            type: currentTab,
+            completed: false,
+            completedBy: null
+        };
+
+        tasks.unshift(newTask);
+        document.getElementById('task-desc').value = '';
+        renderTasks();
+    }
+
+    function completeTask(id) {
+        const selectElement = document.getElementById(`completer-${id}`);
+        const completedBy = selectElement.value;
+        
+        const taskIndex = tasks.findIndex(t => t.id === id);
+        if (taskIndex > -1) {
+            tasks[taskIndex].completed = true;
+            tasks[taskIndex].completedBy = completedBy;
+            renderTasks();
+        }
+    }
+
+    function renderTasks() {
+        const container = document.getElementById('tasks-container');
+        container.innerHTML = '';
+
+        const filteredTasks = tasks.filter(t => t.type === currentTab);
+
+        if (filteredTasks.length === 0) {
+            container.innerHTML = '<li style="text-align:center; color: var(--text-muted);">لا توجد مهام حالياً</li>';
+            return;
+        }
+
+        filteredTasks.forEach(task => {
+            const li = document.createElement('li');
+            li.className = `task-item ${task.completed ? 'completed-task' : ''}`;
+
+            let actionHTML = '';
+            if (!task.completed) {
+                let optionsHTML = allMembers.map(m => `<option value="${m}">${m}</option>`).join('');
+                actionHTML = `
+                    <div class="task-actions">
+                        <select id="completer-${task.id}" style="width: auto; padding: 5px;">
+                            ${optionsHTML}
+                        </select>
+                        <button class="complete-btn" onclick="completeTask(${task.id})">تم الإنجاز</button>
+                    </div>
+                `;
+            } else {
+                actionHTML = `
+                    <div class="task-actions">
+                        <span class="completed-badge">✓ أُنجزت بواسطة: ${task.completedBy}</span>
+                    </div>
+                `;
+            }
+
+            li.innerHTML = `
+                <div class="task-header">
+                    <div>
+                        <div class="task-title">${task.desc}</div>
+                        <div class="task-meta">
+                            أُضيفت بواسطة: ${task.adder} | موكلة إلى: ${task.assignee}
+                        </div>
+                    </div>
+                </div>
+                ${actionHTML}
+            `;
+            container.appendChild(li);
+        });
+    }
+
+    // التهيئة المبدئية
+    updateAssigneeDropdown();
+    renderTasks();
+</script>
+</body>
+</html>
